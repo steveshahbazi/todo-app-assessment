@@ -1,0 +1,72 @@
+<section class="todo-container">
+  <header class="todo-header">
+    <h1>My TODO List</h1>
+    <p>Keep track of your tasks in one place.</p>
+  </header>
+
+  <form class="todo-form" (ngSubmit)="addTodo()">
+    <input
+      type="text"
+      name="title"
+      [(ngModel)]="newTitle"
+      placeholder="What needs to be done?"
+      maxlength="200"
+      required
+      aria-label="New TODO title"
+    />
+
+    <button
+      type="submit"
+      [disabled]="!newTitle.trim() || saving()"
+    >
+      {{ saving() ? 'Adding...' : 'Add TODO' }}
+    </button>
+  </form>
+
+  @if (errorMessage()) {
+    <div class="error-message" role="alert">
+      <span>{{ errorMessage() }}</span>
+      <button type="button" (click)="errorMessage.set(null)">
+        Dismiss
+      </button>
+    </div>
+  }
+
+  @if (loading()) {
+    <p class="status-message">Loading TODOs...</p>
+  } @else {
+    <div class="todo-content">
+      <h2>Tasks ({{ todos().length }})</h2>
+
+      @if (todos().length === 0) {
+        <div class="empty-state">
+          <p>No TODOs yet.</p>
+          <span>Add your first task above.</span>
+        </div>
+      } @else {
+        <ul class="todo-list">
+          @for (todo of todos(); track todo.id) {
+            <li class="todo-item">
+              <div class="todo-details">
+                <span class="todo-title">{{ todo.title }}</span>
+                <small>
+                  {{ todo.createdAt }}
+                </small>
+              </div>
+
+              <button
+                type="button"
+                class="delete-button"
+                [disabled]="deletingIds().has(todo.id)"
+                [attr.aria-label]="'Delete ' + todo.title"
+                (click)="deleteTodo(todo.id)"
+              >
+                {{ deletingIds().has(todo.id) ? 'Deleting...' : 'Delete' }}
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  }
+</section>

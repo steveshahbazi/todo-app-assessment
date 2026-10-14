@@ -1,0 +1,172 @@
+:host {
+  display: block;
+}
+
+.todo-container {
+  max-width: 720px;
+  margin: 48px auto;
+  padding: 32px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.todo-header {
+  margin-bottom: 28px;
+
+  h1 {
+    margin: 0 0 8px;
+    font-size: 2rem;
+    color: #1e293b;
+  }
+
+  p {
+    margin: 0;
+    color: #64748b;
+  }
+}
+
+.todo-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+
+  input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+
+    &:focus {
+      outline: 2px solid #2563eb;
+      outline-offset: 1px;
+    }
+  }
+
+  button {
+    padding: 12px 20px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+
+    &:hover:not(:disabled) {
+      background: #1d4ed8;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.todo-content {
+  h2 {
+    font-size: 1.1rem;
+    color: #334155;
+    margin-bottom: 16px;
+  }
+}
+
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  margin-bottom: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.todo-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.todo-title {
+  color: #1e293b;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.todo-details small {
+  color: #94a3b8;
+}
+
+.delete-button {
+  padding: 8px 14px;
+  background: #fee2e2;
+  color: #b91c1c;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: #fecaca;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.error-message {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 20px;
+  background: #fef2f2;
+  color: #b91c1c;
+  border-radius: 8px;
+
+  button {
+    border: none;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
+.status-message,
+.empty-state {
+  padding: 32px;
+  text-align: center;
+  color: #64748b;
+}
+
+.empty-state span {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+  .todo-container {
+    margin: 16px;
+    padding: 20px;
+  }
+
+  .todo-form {
+    flex-direction: column;
+  }
+
+  .todo-item {
+    align-items: flex-start;
+  }
+}
