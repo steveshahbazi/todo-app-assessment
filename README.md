@@ -1,208 +1,248 @@
-# TODO App — Angular Frontend
+# TODO Application
 
-The frontend for the TODO application, developed using Angular, TypeScript, and SCSS.
+A full-stack TODO management application built using ASP.NET Core Web API and Angular.
 
-It provides a responsive interface for managing TODO items through an ASP.NET Core Web API.
-
-For complete application setup and backend architecture, see the [root README](../../README.md).
+The application allows users to create, view, and delete TODO items through a responsive web interface. It demonstrates a layered backend architecture, dependency injection, asynchronous APIs, in-memory data storage, and automated testing.
 
 ## Features
 
-- Display TODO items
-- Create new TODO items
+- View all TODO items, ordered by creation date (newest first)
+- Create TODO items with title validation
 - Delete existing TODO items
-- Validate titles before submission
-- Display loading and saving indicators
-- Handle API errors
-- Responsive layout
+- Responsive Angular user interface
+- Loading indicators and error handling
+- RESTful API with appropriate HTTP status codes
+- Interactive API documentation using Swagger UI
 - Automated unit tests
 
 ## Technology Stack
 
-- Angular standalone components
+**Backend**
+- C# and ASP.NET Core Web API
+- .NET
+- Dependency Injection
+- In-memory storage using ConcurrentDictionary
+- OpenAPI and Swagger UI
+- xUnit for backend testing
+
+**Frontend**
+- Angular with standalone components
 - TypeScript
 - SCSS
-- Angular Signals for reactive state management
-- RxJS for asynchronous operations
-- Angular HttpClient for API communication
+- Angular Signals
+- RxJS
+- Angular HttpClient
 - Vitest for unit testing
 
 ## Project Structure
 
 ```text
-src/
-├── app/
-│   ├── core/
-│   │   └── services/
-│   │       ├── todo.service.ts
-│   │       └── todo.service.spec.ts
-│   ├── features/
-│   │   └── todos/
-│   │       ├── models/
-│   │       │   └── todo.model.ts
-│   │       └── components/
-│   │           └── todo-list/
-│   │               ├── todo-list.ts
-│   │               ├── todo-list.html
-│   │               ├── todo-list.scss
-│   │               └── todo-list.spec.ts
-│   ├── app.ts
-│   ├── app.html
-│   ├── app.scss
-│   ├── app.spec.ts
-│   └── app.config.ts
-├── main.ts
-├── index.html
-└── styles.scss
+todo-app-assessment/
+├── backend/
+│   ├── TodoApp.Api/
+│   ├── TodoApp.Application/
+│   ├── TodoApp.Domain/
+│   ├── TodoApp.Infrastructure/
+│   └── TodoApp.Tests/
+├── frontend/
+│   └── todo-app/
+├── .gitignore
+└── README.md
 ```
+
+### Backend Architecture
+
+The backend follows a layered architecture with separation of concerns.
+
+| Project | Responsibility |
+|---|---|
+| TodoApp.Api | HTTP endpoints, request validation, API configuration and dependency injection |
+| TodoApp.Application | Business logic and service/repository interfaces |
+| TodoApp.Domain | Domain entities |
+| TodoApp.Infrastructure | In-memory repository implementation |
+| TodoApp.Tests | Automated backend tests |
+
+The API depends on application abstractions, while infrastructure provides the repository implementation.
 
 ## Prerequisites
 
-- Node.js
-- npm
-- Angular-compatible development environment
-- Running ASP.NET Core TODO API
+Install the following tools:
 
-## Installation
+- .NET SDK compatible with the backend target framework
+- Node.js and npm compatible with the Angular version
+- Git
+- Visual Studio, VS Code, or another compatible IDE
 
-From the `frontend/todo-app` directory:
+## Getting Started
 
-```bash
-npm install
-```
-
-## Start Development Server
+### 1. Clone the Repository
 
 ```bash
-npm start
+git clone <repository-url>
+cd todo-app-assessment
 ```
 
-On Windows PowerShell, use:
+Replace `<repository-url>` with the GitHub repository URL.
 
-```powershell
-npm.cmd start
+### 2. Run the Backend
+
+Navigate to the backend directory:
+
+```bash
+cd backend
 ```
 
-Navigate to:
+Restore dependencies:
 
-http://localhost:4200
+```bash
+dotnet restore
+```
 
-Angular automatically reloads the application when source files change.
+Build the solution:
 
-## Backend Integration
+```bash
+dotnet build
+```
 
-The application communicates with the ASP.NET Core Web API at:
+Start the API:
 
-`https://localhost:7172/api/todos`
+```bash
+dotnet run --project TodoApp.Api
+```
 
-The API URL is configured in:
+The API is configured for local development using:
 
-`src/app/core/services/todo.service.ts`
+- HTTPS: https://localhost:7172
+- HTTP: http://localhost:5100
 
-The Angular service exposes the following operations:
+Swagger UI is available in the Development environment at:
 
-| Method | Description |
-|---|---|
-| getAll() | Retrieve all TODO items |
-| getById(id) | Retrieve one TODO item |
-| create(title) | Create a TODO item |
-| delete(id) | Delete a TODO item |
+https://localhost:7172/swagger
 
-Ensure the backend is running before testing API-dependent functionality.
-
-If HTTPS certificate errors occur, trust the .NET development certificate:
+If the browser reports a development certificate warning, trust the .NET development certificate:
 
 ```bash
 dotnet dev-certs https --trust
 ```
 
-## Component Design
+### 3. Run the Frontend
 
-### TodoList
+Open a second terminal from the repository root.
 
-The `TodoList` component manages the user interface and presentation state.
+```bash
+cd frontend/todo-app
+npm install
+npm start
+```
 
-It uses Angular Signals to track:
+On Windows PowerShell, `npm.cmd start` can be used if script execution restrictions prevent `npm` from running.
 
-- TODO items
-- Loading state
-- Saving state
-- Items currently being deleted
-- Error messages
+Open:
 
-### TodoService
+http://localhost:4200
 
-`TodoService` encapsulates HTTP communication with the backend.
+The Angular application communicates with the ASP.NET Core API.
 
-Keeping API communication in a separate service helps maintain separation of concerns and makes components easier to test.
+Both applications must be running for full functionality.
 
-### Todo Model
+## API Endpoints
 
-The frontend represents a TODO item using the following TypeScript interface:
+Base URL:
 
-```typescript
-export interface Todo {
-  id: string;
-  title: string;
-  createdAt: string;
+`https://localhost:7172/api/todos`
+
+| Method | Endpoint | Description | Success Response |
+|---|---|---|---|
+| GET | /api/todos | Retrieve all TODO items | 200 OK |
+| GET | /api/todos/{id} | Retrieve a TODO by ID | 200 OK |
+| POST | /api/todos | Create a TODO | 201 Created |
+| DELETE | /api/todos/{id} | Delete a TODO | 204 No Content |
+
+Requests for nonexistent TODO items return `404 Not Found`.
+
+### Example: Create TODO
+
+Request:
+
+```http
+POST /api/todos
+Content-Type: application/json
+```
+
+```json
+{
+  "title": "Learn Angular"
 }
 ```
 
-## Validation
+Example response:
 
-Before creating a TODO item, the frontend:
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "Learn Angular",
+  "createdAt": "2026-10-14T06:00:00Z"
+}
+```
 
-- Trims leading and trailing whitespace
-- Rejects empty titles
-- Rejects titles exceeding 200 characters
-- Prevents duplicate submissions while saving
+TODO titles are required, whitespace is trimmed, and titles must not exceed 200 characters.
 
-The backend independently validates incoming requests.
+## Data Storage
+
+The application uses an in-memory repository backed by `ConcurrentDictionary`.
+
+This approach keeps the project lightweight and eliminates the need for database configuration.
+
+**Important:** TODO items are not persisted. All data is lost when the backend application restarts.
+
+The repository abstraction allows a persistent implementation to be introduced later without changing the application service interface.
 
 ## Testing
 
-Unit tests use Vitest and Angular testing utilities.
+### Backend
 
-Run all tests:
+From the backend directory:
+
+```bash
+dotnet test
+```
+
+### Frontend
+
+From `frontend/todo-app`:
 
 ```bash
 npm test -- --watch=false
 ```
 
-Or start the test runner in watch mode:
+The frontend tests cover:
 
-```bash
-npm test
-```
+- API request methods and payloads
+- Component initialization
+- Loading TODO items
+- Creating and deleting TODO items
+- Input validation
+- Error handling
+- UI rendering
 
-### Test Coverage
+## Development Notes
 
-`todo.service.spec.ts` verifies HTTP requests, endpoints, and payloads using `HttpTestingController`.
-
-`todo-list.spec.ts` verifies component initialization, loading, creation, deletion, validation, error handling, and rendering.
-
-`app.spec.ts` verifies root application creation and rendering.
-
-## Production Build
-
-Build the Angular application:
-
-```bash
-npm run build
-```
-
-Angular generates production build artifacts in the configured output directory under `dist/`.
+- Angular runs on port 4200 by default.
+- The backend CORS policy allows requests from `http://localhost:4200`.
+- The frontend API URL is configured in `src/app/core/services/todo.service.ts`.
+- Swagger UI is enabled in the Development environment.
+- The backend repository is registered as a singleton so TODO items remain available across requests while the application is running.
 
 ## Future Improvements
 
-- TODO editing
-- Completion status
-- Search and filtering
+- Persistent database storage using Entity Framework Core
+- Authentication and authorization
+- Editing TODO items
+- Completion status and filtering
 - Pagination
-- Environment-specific API configuration
-- End-to-end tests
-- Accessibility improvements
+- Docker support
+- CI/CD pipeline
 
-## Notes
+## License
 
-This frontend is designed to work with the backend included in the same repository. Data is stored in memory by the backend and will be lost when the backend restarts.
+This project is provided for demonstration and educational purposes.
